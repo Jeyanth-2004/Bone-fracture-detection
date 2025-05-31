@@ -14,7 +14,7 @@ st.title("Bone Fracture Detection with Deep Learning")
 
 st.markdown(
     """
-    Hi...😄😄😄, this is Jeyanth Kannan!  
+    Hi, this is Jeyanth Kannan!  
     This app uses deep learning (YOLO models) to detect bone fractures in X-ray images.  
     Upload your image or test with sample images to explore its capabilities.
     """
