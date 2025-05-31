@@ -1,7 +1,7 @@
 streamlit
-torch
-torchvision
-numpy
-Pillow
-matplotlib
+ultralytics
 opencv-python-headless
+pillow
+numpy
+requests
+
