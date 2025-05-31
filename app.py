@@ -21,29 +21,20 @@ st.markdown(
 )
 
 # -------------------------
-# Step 1: Download Models if Not Present
+# Step 1: Load Models
 # -------------------------
 
 @st.cache_resource
 def load_models():
-    def download_model(url, filename):
-        if not os.path.exists(filename):
-            st.info(f"Downloading {filename}...")
-            response = requests.get(url)
-            with open(filename, "wb") as f:
-                f.write(response.content)
-            st.success(f"{filename} downloaded!")
+    model_files = ["model1.pt", "model3.pt"]
 
-    model_urls = {
-        "model1.pt": "https://drive.google.com/uc?export=download&id=1lbj4V9tvV880Ap4K7vBXMrEi110m6KMQ",
-        "model2.pt": "https://drive.google.com/uc?export=download&id=1bWpCubeKqdBlSeMxoX2gJOLNPIDJBTc9",
-        "model3.pt": "https://drive.google.com/uc?export=download&id=18jnumnfaJnAnA29CXUdbKZUXZyQBGbE1",
-    }
+    # Check for existence
+    for file in model_files:
+        if not os.path.exists(file):
+            st.error(f"Missing model file: {file}")
+            st.stop()
 
-    for filename, url in model_urls.items():
-        download_model(url, filename)
-
-    models = [YOLO(filename) for filename in model_urls]
+    models = [YOLO(file) for file in model_files]
     for model in models:
         model.conf = 0.4
     return models
@@ -90,7 +81,7 @@ def detect_fracture(image):
         fracture_detected = any(len(result) > 0 and len(result[0].boxes) > 0 for result in results)
 
         if fracture_detected:
-            best_result = max(results, key=lambda x: max(box.conf.item() for box in x[0].boxes) if x[0].boxes else 0)
+            best_result = max(results, key=lambda x: max((box.conf.item() for box in x[0].boxes), default=0))
             boxes = best_result[0].boxes.xyxy.cpu().numpy()
             confidences = best_result[0].boxes.conf.cpu().numpy()
 
